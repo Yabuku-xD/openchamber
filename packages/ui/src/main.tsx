@@ -66,3 +66,4 @@ createRoot(rootElement).render(
     </I18nProvider>
   </StrictMode>,
 );
+// Upstream PR: openchamber/openchamber#999
