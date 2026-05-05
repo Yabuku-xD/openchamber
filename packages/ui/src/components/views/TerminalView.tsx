@@ -1079,6 +1079,45 @@ export const TerminalView: React.FC = () => {
                             />
                         </div>
 
+                        {terminalSessionId ? (
+                            grantToken ? (
+                                <Button
+                                    type="button"
+                                    size="xs"
+                                    variant="outline"
+                                    className="h-6 shrink-0 gap-1 px-2 text-[var(--status-info)]"
+                                    onClick={() => {
+                                        revokeTerminalReadGrant(grantToken).catch(() => {});
+                                        setGrantToken(null);
+                                        setGrantExpiresAt(0);
+                                    }}
+                                    title={t('terminalView.agent.watchingTitle', { seconds: grantSecondsLeft })}
+                                >
+                                    <RiRobot2Line className="h-3.5 w-3.5 shrink-0" />
+                                    <span className="whitespace-nowrap">{t('terminalView.agent.watching')}</span>
+                                </Button>
+                            ) : (
+                                <Button
+                                    type="button"
+                                    size="xs"
+                                    variant="ghost"
+                                    className="h-6 shrink-0 gap-1 px-2"
+                                    onClick={async () => {
+                                        try {
+                                            const result = await requestTerminalReadGrant(terminalSessionId);
+                                            setGrantToken(result.token);
+                                            setGrantExpiresAt(Date.now() + result.expiresIn * 1000);
+                                        } catch {
+                                        }
+                                    }}
+                                    title={t('terminalView.agent.letWatchTitle')}
+                                >
+                                    <RiRobot2Line className="h-3.5 w-3.5 shrink-0" />
+                                    <span className="whitespace-nowrap">{t('terminalView.agent.letWatch')}</span>
+                                </Button>
+                            )
+                        ) : null}
+
                         <Button
                             type="button"
                             size="xs"
@@ -1106,44 +1145,6 @@ export const TerminalView: React.FC = () => {
                                     <RiGlobalLine className="h-3.5 w-3.5 shrink-0" />
                                     <span className="whitespace-nowrap">{t('terminalView.preview.open')}</span>
                                 </Button>
-                            ) : null}
-                            {terminalSessionId ? (
-                                grantToken ? (
-                                    <Button
-                                        type="button"
-                                        size="xs"
-                                        variant="outline"
-                                        className="h-6 shrink-0 gap-1 px-2 text-[var(--status-info)]"
-                                        onClick={() => {
-                                            revokeTerminalReadGrant(grantToken).catch(() => {});
-                                            setGrantToken(null);
-                                            setGrantExpiresAt(0);
-                                        }}
-                                        title={t('terminalView.agent.watchingTitle', { seconds: grantSecondsLeft })}
-                                    >
-                                        <RiRobot2Line className="h-3.5 w-3.5 shrink-0" />
-                                        <span className="whitespace-nowrap">{t('terminalView.agent.watching')}</span>
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        type="button"
-                                        size="xs"
-                                        variant="ghost"
-                                        className="h-6 shrink-0 gap-1 px-2"
-                                        onClick={async () => {
-                                            try {
-                                                const result = await requestTerminalReadGrant(terminalSessionId);
-                                                setGrantToken(result.token);
-                                                setGrantExpiresAt(Date.now() + result.expiresIn * 1000);
-                                            } catch {
-                                            }
-                                        }}
-                                        title={t('terminalView.agent.letWatchTitle')}
-                                    >
-                                        <RiRobot2Line className="h-3.5 w-3.5 shrink-0" />
-                                        <span className="whitespace-nowrap">{t('terminalView.agent.letWatch')}</span>
-                                    </Button>
-                                )
                             ) : null}
                             {showBottomDockControls ? (
                                 <>
